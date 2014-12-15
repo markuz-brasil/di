@@ -1,8 +1,8 @@
 TODO: explain the motivation for this fork. And update this README
 
-some tests were commented out because custome jasmine matchers not working.
+SuperConstructor tests are failing, I suspect it must be a hard dep on traceur
 
-also, tests regarding types were completely removed
+also, all tests regarding types were completely removed
 
 ## Dependency Injection v2
 
