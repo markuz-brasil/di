@@ -5,6 +5,7 @@ import {
   Provide as ProvideAnnotation,
   TransientScope as TransientScopeAnnotation
 } from './annotations';
+
 import {isFunction, toString} from './util';
 import {profileInjector} from './profiler';
 import {createProviderFromFnOrClass} from './providers';

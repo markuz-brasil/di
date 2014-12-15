@@ -6,11 +6,12 @@
   "author": {
     "name": "markuz brasil"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "jest": {
+    "rootDir": "./commonjs/"
   },
   "dependencies": {
     "6to5": ">=1.9.10",
+    "6to5-jest": "^1.0.0",
     "6to5ify": ">=1.0.0",
     "aliasify": ">=1.4.0",
     "brfs": ">=1.2.0",
@@ -30,6 +31,7 @@
     "gulp-sourcemaps": ">=1.1.1",
     "gulp-uglify": ">=1.0.1",
     "gulp-util": ">=3.0.0",
+    "jest-cli": "^0.2.1",
     "pm2": ">=0.12.1",
     "regenerator": ">=0.7.7",
     "require-dir": ">=0.1.0",
@@ -42,7 +44,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "sh ./etc/build.sh assets",
     "dev": "./node_modules/.bin/pm2 --name di start ./etc/build.sh -- watch serve assets; pm2 logs di",
     "flush": "./node_modules/.bin/pm2 delete di; ./node_modules/.bin/pm2 flush",

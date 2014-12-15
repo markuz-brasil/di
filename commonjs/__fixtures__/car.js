@@ -1,0 +1,42 @@
+"use strict";
+
+exports.createEngine = createEngine;
+var annotate = require('../index').annotate;
+var Inject = require('../index').Inject;
+var Provide = require('../index').Provide;
+var Engine = function Engine() {};
+
+exports.Engine = Engine;
+var Car = (function () {
+  var Car = function Car(engine) {
+    this.engine = engine;
+  };
+
+  Car.prototype.start = function () {};
+
+  return Car;
+})();
+
+exports.Car = Car;
+function createEngine() {
+  return "strong engine";
+}
+
+var CyclicEngine = function CyclicEngine(car) {};
+
+exports.CyclicEngine = CyclicEngine;
+
+
+// This is an example of using annotate helper, instead of annotations.
+
+// @Inject(Engine)
+annotate(Car, new Inject(Engine));
+
+// @Provide(Engine)
+annotate(createEngine, new Provide(Engine));
+
+// @Inject(Car)
+annotate(CyclicEngine, new Inject(Car));
+// @Provide(Engine)
+annotate(CyclicEngine, new Provide(Engine));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIl9fZml4dHVyZXNfXy9jYXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7UUFpQmdCLFlBQVksR0FBWixZQUFZO0lBZjFCLFFBQVEsdUJBQVIsUUFBUTtJQUNSLE1BQU0sdUJBQU4sTUFBTTtJQUNOLE9BQU8sdUJBQVAsT0FBTztJQUdJLE1BQU0sWUFBTixNQUFNOztRQUFOLE1BQU0sR0FBTixNQUFNO0lBRU4sR0FBRztNQUFILEdBQUcsR0FDSCxTQURBLEdBQUcsQ0FDRixNQUFNLEVBQUU7QUFDbEI7OztBQUZTLEtBQUcsV0FLZCxLQUFLLEdBQUEsWUFBRyxFQUFFOztTQUxDLEdBQUc7OztRQUFILEdBQUcsR0FBSCxHQUFHO0FBUVQsU0FBUyxZQUFZLEdBQUc7QUFDN0IsU0FBTyxlQUFlLENBQUM7Q0FDeEI7O0lBRVksWUFBWSxHQUNaLFNBREEsWUFBWSxDQUNYLEdBQUcsRUFBRSxFQUFFOztRQURSLFlBQVksR0FBWixZQUFZOzs7Ozs7QUFPekIsUUFBUSxDQUFDLEdBQUcsRUFBRSxJQUFJLE1BQU0sQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDOzs7QUFHbEMsUUFBUSxDQUFDLFlBQVksRUFBRSxJQUFJLE9BQU8sQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDOzs7QUFHNUMsUUFBUSxDQUFDLFlBQVksRUFBRSxJQUFJLE1BQU0sQ0FBQyxHQUFHLENBQUMsQ0FBQyxDQUFDOztBQUV4QyxRQUFRLENBQUMsWUFBWSxFQUFFLElBQUksT0FBTyxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUMiLCJmaWxlIjoiX19maXh0dXJlc19fL2Nhci5qcyIsInNvdXJjZXNDb250ZW50IjpbIlxuaW1wb3J0IHtcbiAgYW5ub3RhdGUsXG4gIEluamVjdCxcbiAgUHJvdmlkZSxcbn0gZnJvbSAnLi4vaW5kZXgnXG5cbmV4cG9ydCBjbGFzcyBFbmdpbmUge31cblxuZXhwb3J0IGNsYXNzIENhciB7XG4gIGNvbnN0cnVjdG9yKGVuZ2luZSkge1xuICAgIHRoaXMuZW5naW5lID0gZW5naW5lO1xuICB9XG5cbiAgc3RhcnQoKSB7fVxufVxuXG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlRW5naW5lKCkge1xuICByZXR1cm4gJ3N0cm9uZyBlbmdpbmUnO1xufVxuXG5leHBvcnQgY2xhc3MgQ3ljbGljRW5naW5lIHtcbiAgY29uc3RydWN0b3IoY2FyKSB7fVxufVxuXG4vLyBUaGlzIGlzIGFuIGV4YW1wbGUgb2YgdXNpbmcgYW5ub3RhdGUgaGVscGVyLCBpbnN0ZWFkIG9mIGFubm90YXRpb25zLlxuXG4vLyBASW5qZWN0KEVuZ2luZSlcbmFubm90YXRlKENhciwgbmV3IEluamVjdChFbmdpbmUpKTtcblxuLy8gQFByb3ZpZGUoRW5naW5lKVxuYW5ub3RhdGUoY3JlYXRlRW5naW5lLCBuZXcgUHJvdmlkZShFbmdpbmUpKTtcblxuLy8gQEluamVjdChDYXIpXG5hbm5vdGF0ZShDeWNsaWNFbmdpbmUsIG5ldyBJbmplY3QoQ2FyKSk7XG4vLyBAUHJvdmlkZShFbmdpbmUpXG5hbm5vdGF0ZShDeWNsaWNFbmdpbmUsIG5ldyBQcm92aWRlKEVuZ2luZSkpO1xuIl0sInNvdXJjZVJvb3QiOiIvc291cmNlLyJ9

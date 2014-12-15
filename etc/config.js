@@ -4,7 +4,7 @@ var path = require('path')
 var fs = require('fs')
 
 
-var PATH_OFFSET = path.relative(process.cwd(), fs.realpathSync(process.env.ORI_PATH))
+var PATH_OFFSET = path.relative(process.cwd(), fs.realpathSync(process.env.ORI_PATH || '.'))
 
 var CFG = {
   standalone: 'DI',
@@ -62,8 +62,6 @@ CFG.FILES = {
   ],
 }
 
-
-console.log(PATH_OFFSET, CFG.entry)
 
 CFG.entry = path.join(PATH_OFFSET, CFG.entry)
 CFG.dest = path.join(PATH_OFFSET, CFG.dest)

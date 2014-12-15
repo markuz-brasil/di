@@ -1,0 +1,19 @@
+"use strict";
+
+var annotate = require('../index').annotate;
+var Inject = require('../index').Inject;
+var Provide = require('../index').Provide;
+var ShinyHouse = (function () {
+  var ShinyHouse = function ShinyHouse(kitchen) {};
+
+  ShinyHouse.prototype.nothing = function () {};
+
+  return ShinyHouse;
+})();
+
+exports.ShinyHouse = ShinyHouse;
+annotate(ShinyHouse, new Provide("House"));
+annotate(ShinyHouse, new Inject("Kitchen"));
+
+var module = exports.module = [ShinyHouse];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIl9fZml4dHVyZXNfXy9zaGlueV9ob3VzZS5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztJQUNFLFFBQVEsdUJBQVIsUUFBUTtJQUNSLE1BQU0sdUJBQU4sTUFBTTtJQUNOLE9BQU8sdUJBQVAsT0FBTztJQUlJLFVBQVU7TUFBVixVQUFVLEdBQ1YsU0FEQSxVQUFVLENBQ1QsT0FBTyxFQUFFLEVBQUU7O0FBRFosWUFBVSxXQUdyQixPQUFPLEdBQUEsWUFBRyxFQUFFOztTQUhELFVBQVU7OztRQUFWLFVBQVUsR0FBVixVQUFVO0FBS3ZCLFFBQVEsQ0FBQyxVQUFVLEVBQUUsSUFBSSxPQUFPLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQTtBQUMxQyxRQUFRLENBQUMsVUFBVSxFQUFFLElBQUksTUFBTSxDQUFDLFNBQVMsQ0FBQyxDQUFDLENBQUE7O0FBRXBDLElBQUksTUFBTSxXQUFOLE1BQU0sR0FBRyxDQUFDLFVBQVUsQ0FBQyxDQUFDIiwiZmlsZSI6Il9fZml4dHVyZXNfXy9zaGlueV9ob3VzZS5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7XG4gIGFubm90YXRlLFxuICBJbmplY3QsXG4gIFByb3ZpZGUsXG59IGZyb20gJy4uL2luZGV4J1xuXG5cbmV4cG9ydCBjbGFzcyBTaGlueUhvdXNlIHtcbiAgY29uc3RydWN0b3Ioa2l0Y2hlbikge31cblxuICBub3RoaW5nKCkge31cbn1cbmFubm90YXRlKFNoaW55SG91c2UsIG5ldyBQcm92aWRlKCdIb3VzZScpKVxuYW5ub3RhdGUoU2hpbnlIb3VzZSwgbmV3IEluamVjdCgnS2l0Y2hlbicpKVxuXG5leHBvcnQgdmFyIG1vZHVsZSA9IFtTaGlueUhvdXNlXTtcbiJdLCJzb3VyY2VSb290IjoiL3NvdXJjZS8ifQ==
