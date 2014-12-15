@@ -141,98 +141,104 @@ describe('injector', function() {
       .toThrowError(/Error during instantiation of Engine! \(Car -> Engine\)/)
   })
 
-  // describe('SuperConstructor', function () {
+  describe('SuperConstructor', function () {
 
-  //   it('should support "super" to call a parent constructor', function() {
-  //     class Something {}
+    it('should support "super" to call a parent constructor', function() {
+      class Something {}
 
-  //     class Parent {
-  //       constructor(something) {
-  //         this.parentSomething = something
-  //       }
-  //     }
-  //     annotate(Parent, new Inject(Something))
+      class Parent {
+        constructor(something) {
+          this.parentSomething = something
+        }
+      }
+      annotate(Parent, new Inject(Something))
 
-  //     class Child extends Parent {
-  //       constructor(superConstructor, something) {
-  //         superConstructor()
-  //         this.childSomething = something
-  //       }
-  //     }
-  //     annotate(Child, new SuperConstructor, new Something)
+      class Child extends Parent {
+        constructor(superConstructor, something) {
+          // console.log(superConstructor)
+          superConstructor()
+          this.childSomething = something
+        }
+      }
 
-  //     var injector = new Injector()
-  //     var instance = injector.get(Child)
+      // console.log(Child.annotations)
+      // Child.annotations = [new Inject(SuperConstructor, Something)]
+      annotate(Child, new Inject(SuperConstructor, Something))
 
-  //     expect(instance.parentSomething).toBeInstanceOf(Something)
-  //     expect(instance.childSomething).toBeInstanceOf(Something)
-  //     expect(instance.childSomething).toBe(instance.parentSomething)
-  //   })
+      console.log(Child.annotations)
+      console.log('^^', Parent.annotations)
+      // annotate(Child, new Inject(Something))
 
-  //   it('should support "super" to call multiple parent constructors', function() {
-  //     class Foo {}
-  //     class Bar {}
+      var injector = new Injector()
+      var instance = injector.get(Child)
 
-  //     class Parent {
-  //       constructor(foo) {
-  //         this.parentFoo = foo
-  //       }
-  //     }
-  //     annotate(Parent, new Inject(Foo))
+      expect(instance.parentSomething).toBeInstanceOf(Something)
+      expect(instance.childSomething).toBeInstanceOf(Something)
+      expect(instance.childSomething).toBe(instance.parentSomething)
+    })
 
-  //     class Child extends Parent {
-  //       constructor(superConstructor, foo) {
-  //         superConstructor()
-  //         this.childFoo = foo
-  //       }
-  //     }
-  //     annotate(Child, new SuperConstructor, new Foo)
+    // it('should support "super" to call multiple parent constructors', function() {
+    //   class Foo {}
+    //   class Bar {}
 
-  //     class GrandChild extends Child {
-  //       constructor(bar, superConstructor, foo) {
-  //         superConstructor()
-  //         this.grandChildBar = bar
-  //         this.grandChildFoo = foo
-  //       }
-  //     }
-  //     annotate(GrandChild, new SuperConstructor, new Foo)
+    //   class Parent {
+    //     constructor(foo) {
+    //       this.parentFoo = foo
+    //     }
+    //   }
+    //   annotate(Parent, new Inject(Foo))
 
-  //     var injector = new Injector()
-  //     var instance = injector.get(GrandChild)
+    //   class Child extends Parent {
+    //     constructor(superConstructor, foo) {
+    //       superConstructor()
+    //       this.childFoo = foo
+    //     }
+    //   }
+    //   annotate(Child, new SuperConstructor, new Foo)
 
-  //     expect(instance.parentFoo).toBeInstanceOf(Foo)
-  //     expect(instance.childFoo).toBeInstanceOf(Foo)
-  //     expect(instance.grandChildFoo).toBeInstanceOf(Foo)
-  //     expect(instance.grandChildBar).toBeInstanceOf(Bar)
-  //   })
+    //   class GrandChild extends Child {
+    //     constructor(bar, superConstructor, foo) {
+    //       superConstructor()
+    //       this.grandChildBar = bar
+    //       this.grandChildFoo = foo
+    //     }
+    //   }
+    //   annotate(GrandChild, new SuperConstructor, new Foo)
 
-  //   it('should throw an error when used in a factory function', function() {
-  //     class Something {}
+    //   var injector = new Injector()
+    //   var instance = injector.get(GrandChild)
 
-  //     annotate(createSomething, new Provide(Something))
-  //     annotate(createSomething, new Inject(SuperConstructor))
-  //     function createSomething(parent) {
-  //       console.log('init', parent)
-  //     }
+    //   expect(instance.parentFoo).toBeInstanceOf(Foo)
+    //   expect(instance.childFoo).toBeInstanceOf(Foo)
+    //   expect(instance.grandChildFoo).toBeInstanceOf(Foo)
+    //   expect(instance.grandChildBar).toBeInstanceOf(Bar)
+    // })
 
-  //     expect(function() {
-  //       var injector = new Injector([createSomething])
-  //       injector.get(Something)
-  //     }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
-  //   })
+    it('should throw an error when used in a factory function', function() {
+      class Something {}
 
-  // })
+      annotate(createSomething, new Provide(Something))
+      annotate(createSomething, new Inject(SuperConstructor))
+      function createSomething() {}
 
-  it('should throw an error when used in a class without any parent', function() {
-    class WithoutParent {}
-    annotate(WithoutParent, new Inject(SuperConstructor))
+      expect(function() {
+        var injector = new Injector([createSomething])
+        injector.get(Something)
+      }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
+    })
 
-    var injector = new Injector()
-
-    expect(function() {
-      injector.get(WithoutParent)
-    }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
   })
+
+  // it('should throw an error when used in a class without any parent', function() {
+  //   class WithoutParent {}
+  //   annotate(WithoutParent, new Inject(SuperConstructor))
+
+  //   var injector = new Injector()
+
+  //   expect(function() {
+  //     injector.get(WithoutParent)
+  //   }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
+  // })
 
   it('should throw an error when null/undefined token requested', function() {
     var injector = new Injector()

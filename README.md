@@ -1,6 +1,7 @@
-TODO: explain the motivation for this fork. And update this README
+TODO: better explain the motivation for this fork.
 
-SuperConstructor tests are failing, I suspect it must be a hard dep on traceur
+The way traceu defines classes doesnt inherit the parent class static methods, against the ES6 standard.
+I patched the `annotate` function to check weather the `annotations` static array is from `__proto` or not. This fix the `SuperConstructor` tests fails
 
 also, all tests regarding types were completely removed
 
