@@ -1,6 +1,5 @@
 jest.autoMockOff()
 import '6to5/polyfill'
-import '../__fixtures__/jasmine_matchers'
 
 import {
   annotate,
@@ -16,11 +15,6 @@ import {
 } from '../index'
 
 class UserList {}
-
-annotate(fetchUsers2, new Provide(UserList))
-function fetchUsers2() {
-  return {}
-}
 
 // An async provider.
 annotate(fetchUsers, new ProvidePromise(UserList))
@@ -44,82 +38,72 @@ class SmartUserController {
 }
 annotate(SmartUserController, new InjectPromise(UserList))
 
-
 describe('async', function() {
 
-  // it('should return a promise', function() {
-  //   var injector = new Injector([fetchUsers2])
-  //   var p = injector.get(UserList)
+  it('should return a promise', function() {
+    var injector = new Injector([fetchUsers])
+    var p = injector.getPromise(UserList)
 
-  //   expect(p).toBePromiseLike()
-  // })
+    expect(p).toBePromiseLike()
+  })
 
+  it('should throw when instantiating promise provider synchronously', function() {
+    var injector = new Injector([fetchUsers])
 
-  // it('should throw when instantiating promise provider synchronously', function() {
-  //   var injector = new Injector([fetchUsers])
+    expect(() => injector.get(UserList))
+        .toThrowError('Cannot instantiate UserList synchronously. It is provided as a promise!')
+  })
 
-  //   expect(() => injector.get(UserList))
-  //       .toThrowError('Cannot instantiate UserList synchronously. It is provided as a promise!')
-  // })
+  it('should return promise even if the provider is sync', function() {
+    var injector = new Injector()
+    var p = injector.getPromise(SynchronousUserList)
 
-
-  // it('should return promise even if the provider is sync', function() {
-  //   var injector = new Injector()
-  //   var p = injector.getPromise(SynchronousUserList)
-
-  //   expect(p).toBePromiseLike()
-  // })
-
+    expect(p).toBePromiseLike()
+  })
 
   // regression
-  // it('should return promise even if the provider is sync, from cache', function() {
-  //   var injector = new Injector()
-  //   var p1 = injector.getPromise(SynchronousUserList)
-  //   var p2 = injector.getPromise(SynchronousUserList)
+  it('should return promise even if the provider is sync, from cache', function() {
+    var injector = new Injector()
+    var p1 = injector.getPromise(SynchronousUserList)
+    var p2 = injector.getPromise(SynchronousUserList)
 
-  //   expect(p2).toBePromiseLike()
-  // })
+    expect(p2).toBePromiseLike()
+  })
 
+  pit('should return promise when a dependency is async', function() {
+    var injector = new Injector([fetchUsers])
 
-  // it('should return promise when a dependency is async', function(done) {
-  //   var injector = new Injector([fetchUsers])
-
-  //   injector.getPromise(UserController).then(function(userController) {
-  //     expect(userController).toBeInstanceOf(UserController)
-  //     expect(userController.list).toBeInstanceOf(UserList)
-  //     done()
-  //   })
-  // })
-
+    return injector.getPromise(UserController).then(function(userController) {
+      expect(userController).toBeInstanceOf(UserController)
+      expect(userController.list).toBeInstanceOf(UserList)
+    })
+  })
 
   // regression
-  // it('should return a promise even from parent injector', function() {
-  //   var injector = new Injector([SynchronousUserList])
-  //   var childInjector = injector.createChild([])
+  it('should return a promise even from parent injector', function() {
+    var injector = new Injector([SynchronousUserList])
+    var childInjector = injector.createChild([])
 
-  //   expect(childInjector.getPromise(SynchronousUserList)).toBePromiseLike()
-  // })
+    expect(childInjector.getPromise(SynchronousUserList)).toBePromiseLike()
+  })
 
+  it('should throw when a dependency is async', function() {
+    var injector = new Injector([fetchUsers])
 
-  // it('should throw when a dependency is async', function() {
-  //   var injector = new Injector([fetchUsers])
+    expect(() => injector.get(UserController))
+        .toThrowError('Cannot instantiate UserList synchronously. It is provided as a promise! (UserController -> UserList)')
+  })
 
-  //   expect(() => injector.get(UserController))
-  //       .toThrowError('Cannot instantiate UserList synchronously. It is provided as a promise! (UserController -> UserList)')
-  // })
+  it('should resolve synchronously when async dependency requested as a promise', function() {
+    var injector = new Injector([fetchUsers])
+    var controller = injector.get(SmartUserController)
 
-
-  // it('should resolve synchronously when async dependency requested as a promise', function() {
-  //   var injector = new Injector([fetchUsers])
-  //   var controller = injector.get(SmartUserController)
-
-  //   expect(controller).toBeInstanceOf(SmartUserController)
-  //   expect(controller.promise).toBePromiseLike()
-  // })
-
+    expect(controller).toBeInstanceOf(SmartUserController)
+    expect(controller.promise).toBePromiseLike()
+  })
 
   // regression
-  it('should not cache TransientScope', function(done) {
+  pit('should not cache TransientScope', function() {
 
     class NeverCachedUserController {
       constructor(list) {
@@ -131,24 +115,21 @@ describe('async', function() {
 
     var injector = new Injector([fetchUsers])
 
-    injector.getPromise(NeverCachedUserController).then(function(controller1) {
+    return injector.getPromise(NeverCachedUserController).then(function(controller1) {
       injector.getPromise(NeverCachedUserController).then(function(controller2) {
         expect(controller1).not.toBe(controller2)
-        done()
       })
     })
   })
 
+  pit('should allow async dependency in a parent constructor', function() {
+    class ChildUserController extends UserController {}
 
-  // it('should allow async dependency in a parent constructor', function(done) {
-  //   class ChildUserController extends UserController {}
+    var injector = new Injector([fetchUsers])
 
-  //   var injector = new Injector([fetchUsers])
-
-  //   injector.getPromise(ChildUserController).then(function(childUserController) {
-  //     expect(childUserController).toBeInstanceOf(ChildUserController)
-  //     expect(childUserController.list).toBeInstanceOf(UserList)
-  //     done()
-  //   })
-  // })
+    return injector.getPromise(ChildUserController).then(function(childUserController) {
+      expect(childUserController).toBeInstanceOf(ChildUserController)
+      expect(childUserController.list).toBeInstanceOf(UserList)
+    })
+  })
 })

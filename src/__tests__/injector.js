@@ -1,6 +1,5 @@
 jest.autoMockOff()
 import '6to5/polyfill'
-import '../__fixtures__/jasmine_matchers'
 
 import {
   annotate,
@@ -23,62 +22,62 @@ import {module as shinyHouseModule} from '../__fixtures__/shiny_house'
 
 describe('injector', function() {
 
-  // it('should instantiate a class without dependencies', function() {
-  //   class Car {
-  //     constructor() {}
-  //     start() {}
-  //   }
+  it('should instantiate a class without dependencies', function() {
+    class Car {
+      constructor() {}
+      start() {}
+    }
 
-  //   var injector = new Injector()
-  //   var car = injector.get(Car)
+    var injector = new Injector()
+    var car = injector.get(Car)
 
-  //   expect(car).toBeInstanceOf(Car)
-  // })
+    expect(car).toBeInstanceOf(Car)
+  })
 
-  // it('should resolve dependencies based on @Inject annotation', function() {
-  //   class Engine {
-  //     start() {}
-  //   }
+  it('should resolve dependencies based on @Inject annotation', function() {
+    class Engine {
+      start() {}
+    }
 
-  //   class Car {
-  //     constructor(engine) {
-  //       this.engine = engine
-  //     }
+    class Car {
+      constructor(engine) {
+        this.engine = engine
+      }
 
-  //     start() {}
-  //   }
-  //   annotate(Car, new Inject(Engine))
+      start() {}
+    }
+    annotate(Car, new Inject(Engine))
 
-  //   var injector = new Injector()
-  //   var car = injector.get(Car)
+    var injector = new Injector()
+    var car = injector.get(Car)
 
-  //   expect(car).toBeInstanceOf(Car)
-  //   expect(car.engine).toBeInstanceOf(Engine)
-  // })
+    expect(car).toBeInstanceOf(Car)
+    expect(car.engine).toBeInstanceOf(Engine)
+  })
 
-  // it('should override providers', function() {
-  //   class Engine {}
+  it('should override providers', function() {
+    class Engine {}
 
-  //   class Car {
-  //     constructor(engine) {
-  //       this.engine = engine
-  //     }
+    class Car {
+      constructor(engine) {
+        this.engine = engine
+      }
 
-  //     start() {}
-  //   }
-  //   annotate(Car, new Inject(Engine))
+      start() {}
+    }
+    annotate(Car, new Inject(Engine))
 
-  //   class MockEngine {
-  //     start() {}
-  //   }
-  //   annotate(MockEngine, new Provide(Engine))
+    class MockEngine {
+      start() {}
+    }
+    annotate(MockEngine, new Provide(Engine))
 
-  //   var injector = new Injector([MockEngine])
-  //   var car = injector.get(Car)
+    var injector = new Injector([MockEngine])
+    var car = injector.get(Car)
 
-  //   expect(car).toBeInstanceOf(Car)
-  //   expect(car.engine).toBeInstanceOf(MockEngine)
-  // })
+    expect(car).toBeInstanceOf(Car)
+    expect(car.engine).toBeInstanceOf(MockEngine)
+  })
 
   it('should allow factory function', function() {
     class Size {}
@@ -103,44 +102,44 @@ describe('injector', function() {
     expect(injector.get(Car)).toBe(car)
   })
 
-  // it('should throw when no provider defined', function() {
-  //   var injector = new Injector()
+  it('should throw when no provider defined', function() {
+    var injector = new Injector()
 
-  //   expect(() => injector.get('NonExisting'))
-  //       .toThrowError('No provider for NonExisting!')
-  // })
+    expect(() => injector.get('NonExisting'))
+        .toThrowError('No provider for NonExisting!')
+  })
 
-  // it('should show the full path when no provider defined', function() {
-  //   var injector = new Injector(houseModule)
+  it('should show the full path when no provider defined', function() {
+    var injector = new Injector(houseModule)
 
-  //   expect(() => injector.get('House'))
-  //       .toThrowError('No provider for Sink! (House -> Kitchen -> Sink)')
-  // })
+    expect(() => injector.get('House'))
+        .toThrowError('No provider for Sink! (House -> Kitchen -> Sink)')
+  })
 
-  // it('should throw when trying to instantiate a cyclic dependency', function() {
-  //   var injector = new Injector([CyclicEngine])
+  it('should throw when trying to instantiate a cyclic dependency', function() {
+    var injector = new Injector([CyclicEngine])
 
-  //   expect(() => injector.get(Car))
-  //       .toThrowError('Cannot instantiate cyclic dependency! (Car -> Engine -> Car)')
-  // })
+    expect(() => injector.get(Car))
+        .toThrowError('Cannot instantiate cyclic dependency! (Car -> Engine -> Car)')
+  })
 
-  // it('should show the full path when error happens in a constructor', function() {
-  //   class Engine {
-  //     constructor() {
-  //       throw new Error('This engine is broken!')
-  //     }
-  //   }
+  it('should show the full path when error happens in a constructor', function() {
+    class Engine {
+      constructor() {
+        throw new Error('This engine is broken!')
+      }
+    }
 
-  //   class Car {
-  //     constructor(e) {}
-  //   }
-  //   annotate(Car, new Inject(Engine))
+    class Car {
+      constructor(e) {}
+    }
+    annotate(Car, new Inject(Engine))
 
-  //   var injector = new Injector()
+    var injector = new Injector()
 
-  //   expect(() => injector.get(Car))
-  //     .toThrowError(/Error during instantiation of Engine! \(Car -> Engine\)/)
-  // })
+    expect(() => injector.get(Car))
+      .toThrowError(/Error during instantiation of Engine! \(Car -> Engine\)/)
+  })
 
   // describe('SuperConstructor', function () {
 
@@ -224,47 +223,47 @@ describe('injector', function() {
 
   // })
 
-  // it('should throw an error when used in a class without any parent', function() {
-  //   class WithoutParent {}
-  //   annotate(WithoutParent, new Inject(SuperConstructor))
+  it('should throw an error when used in a class without any parent', function() {
+    class WithoutParent {}
+    annotate(WithoutParent, new Inject(SuperConstructor))
 
-  //   var injector = new Injector()
+    var injector = new Injector()
 
-  //   expect(function() {
-  //     injector.get(WithoutParent)
-  //   }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
-  // })
+    expect(function() {
+      injector.get(WithoutParent)
+    }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
+  })
 
-  // it('should throw an error when null/undefined token requested', function() {
-  //   var injector = new Injector()
+  it('should throw an error when null/undefined token requested', function() {
+    var injector = new Injector()
 
-  //   expect(function() {
-  //     injector.get(null)
-  //   }).toThrowError(/Invalid token "null" requested!/)
+    expect(function() {
+      injector.get(null)
+    }).toThrowError(/Invalid token "null" requested!/)
 
-  //   expect(function() {
-  //     injector.get(undefined)
-  //   }).toThrowError(/Invalid token "undefined" requested!/)
-  // })
+    expect(function() {
+      injector.get(undefined)
+    }).toThrowError(/Invalid token "undefined" requested!/)
+  })
 
   // regression
-  // it('should show the full path when null/undefined token requested', function() {
-  //   class Foo {}
-  //   annotate(Foo, new Inject(undefined))
+  it('should show the full path when null/undefined token requested', function() {
+    class Foo {}
+    annotate(Foo, new Inject(undefined))
 
-  //   class Bar {}
-  //   annotate(Bar, new Inject(null))
+    class Bar {}
+    annotate(Bar, new Inject(null))
 
-  //   var injector = new Injector()
+    var injector = new Injector()
 
-  //   expect(function() {
-  //     injector.get(Foo)
-  //   }).toThrowError(/Invalid token "undefined" requested! \(Foo -> undefined\)/)
+    expect(function() {
+      injector.get(Foo)
+    }).toThrowError(/Invalid token "undefined" requested! \(Foo -> undefined\)/)
 
-  //   expect(function() {
-  //     injector.get(Bar)
-  //   }).toThrowError(/Invalid token "null" requested! \(Bar -> null\)/)
-  // })
+    expect(function() {
+      injector.get(Bar)
+    }).toThrowError(/Invalid token "null" requested! \(Bar -> null\)/)
+  })
 
   it('should provide itself', function() {
     var injector = new Injector()
@@ -286,8 +285,6 @@ describe('injector', function() {
       class Foo {}
       annotate(Foo, new Inject)
 
-      @TransientScope
-      @Inject(Foo)
       class AlwaysNewInstance {
         constructor(foo) {
           this.foo = foo
@@ -339,7 +336,6 @@ describe('injector', function() {
     })
   })
 
-
   describe('child', function() {
 
     it('should load instances from parent injector', function() {
@@ -355,7 +351,6 @@ describe('injector', function() {
 
       expect(carFromChild).toBe(carFromParent)
     })
-
 
     it('should create new instance in a child injector', function() {
       class Car {
@@ -374,9 +369,8 @@ describe('injector', function() {
       var carFromChild = child.get(Car)
 
       expect(carFromParent).not.toBe(carFromChild)
-      // expect(carFromChild).toBeInstanceOf(MockCar)
+      expect(carFromChild).toBeInstanceOf(MockCar)
     })
-
 
     it('should force new instances by annotation', function() {
       class RouteScope {}
@@ -412,8 +406,6 @@ describe('injector', function() {
         start() {}
       }
 
-      @RouteScope
-      @Provide(Engine)
       class MockEngine {
         start() {}
       }
@@ -428,8 +420,8 @@ describe('injector', function() {
       var engineFromB = childB.get(Engine)
 
       expect(engineFromA).not.toBe(engineFromB)
-      // expect(engineFromA).toBeInstanceOf(MockEngine)
-      // expect(engineFromB).toBeInstanceOf(MockEngine)
+      expect(engineFromA).toBeInstanceOf(MockEngine)
+      expect(engineFromB).toBeInstanceOf(MockEngine)
     })
 
     it('should force new instance by annotation using the lowest overridden provider', function() {
@@ -462,19 +454,19 @@ describe('injector', function() {
       var engineFromChild = child.get(Engine)
       var engineFromGrantChild = grantChild.get(Engine)
 
-      // expect(engineFromParent).toBeInstanceOf(Engine)
-      // expect(engineFromChild).toBeInstanceOf(MockEngine)
-      // expect(engineFromGrantChild).toBeInstanceOf(MockEngine)
+      expect(engineFromParent).toBeInstanceOf(Engine)
+      expect(engineFromChild).toBeInstanceOf(MockEngine)
+      expect(engineFromGrantChild).toBeInstanceOf(MockEngine)
       expect(engineFromGrantChild).not.toBe(engineFromChild)
     })
 
-    // it('should show the full path when no provider', function() {
-    //   var parent = new Injector(houseModule)
-    //   var child = parent.createChild(shinyHouseModule)
+    it('should show the full path when no provider', function() {
+      var parent = new Injector(houseModule)
+      var child = parent.createChild(shinyHouseModule)
 
-    //   expect(() => child.get('House'))
-    //       .toThrowError('No provider for Sink! (House -> Kitchen -> Sink)')
-    // })
+      expect(() => child.get('House'))
+          .toThrowError('No provider for Sink! (House -> Kitchen -> Sink)')
+    })
 
     it('should provide itself', function() {
       var parent = new Injector()
@@ -513,7 +505,6 @@ describe('injector', function() {
     })
   })
 
-
   describe('lazy', function() {
 
     it('should instantiate lazily', function() {
@@ -544,7 +535,7 @@ describe('injector', function() {
 
       car.start()
       expect(constructorSpy).toHaveBeenCalled()
-      // expect(car.engine).toBeInstanceOf(ExpensiveEngine)
+      expect(car.engine).toBeInstanceOf(ExpensiveEngine)
     })
 
     // regression
@@ -577,10 +568,11 @@ describe('injector', function() {
 
       car.start()
       expect(constructorSpy).toHaveBeenCalled()
-      // expect(car.engine).toBeInstanceOf(ExpensiveEngine)
+      expect(car.engine).toBeInstanceOf(ExpensiveEngine)
     })
 
     describe('with locals', function() {
+
       it('should always create a new instance', function() {
         var constructorSpy = jasmine.createSpy('constructor')
 

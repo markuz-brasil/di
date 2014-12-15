@@ -43,6 +43,7 @@ gulp.task('test', function(){
   var opt = {
     config: {
       rootDir: process.cwd() +'/commonjs',
+      setupTestFrameworkScriptFile: '<rootDir>/__fixtures__/jasmine_matchers.js'
     }
   }
 
