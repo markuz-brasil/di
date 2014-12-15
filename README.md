@@ -1,14 +1,15 @@
-TODO: explain this fork
+TODO: explain the motivation for this fork. And update this README
 
-some tests were commented out becaouse custome jasmine matchers not working.
+some tests were commented out becouse custome jasmine matchers not working.
 
-also, tests regarding types where completely removed
+also, tests regarding types were completely removed
 
 ## Dependency Injection v2
 
 This readme describes how to set up your working space in order to run the tests and hack on it. See [How can I use it](./docs/how-can-i-use-it.md) on how to use this DI framework in your project.
 
 ### Installation
+None of this steps apply to this fork. 
 ```bash
 # Clone this repo (or your fork).
 git clone https://github.com/angular/di.js.git
