@@ -155,19 +155,12 @@ describe('injector', function() {
 
       class Child extends Parent {
         constructor(superConstructor, something) {
-          // console.log(superConstructor)
           superConstructor()
           this.childSomething = something
         }
       }
 
-      // console.log(Child.annotations)
-      // Child.annotations = [new Inject(SuperConstructor, Something)]
       annotate(Child, new Inject(SuperConstructor, Something))
-
-      console.log(Child.annotations)
-      console.log('^^', Parent.annotations)
-      // annotate(Child, new Inject(Something))
 
       var injector = new Injector()
       var instance = injector.get(Child)
@@ -177,42 +170,43 @@ describe('injector', function() {
       expect(instance.childSomething).toBe(instance.parentSomething)
     })
 
-    // it('should support "super" to call multiple parent constructors', function() {
-    //   class Foo {}
-    //   class Bar {}
+    it('should support "super" to call multiple parent constructors', function() {
+      class Foo {}
+      class Bar {}
 
-    //   class Parent {
-    //     constructor(foo) {
-    //       this.parentFoo = foo
-    //     }
-    //   }
-    //   annotate(Parent, new Inject(Foo))
+      class Parent {
+        constructor(foo) {
+          this.parentFoo = foo
+        }
+      }
+      annotate(Parent, new Inject(Foo))
 
-    //   class Child extends Parent {
-    //     constructor(superConstructor, foo) {
-    //       superConstructor()
-    //       this.childFoo = foo
-    //     }
-    //   }
-    //   annotate(Child, new SuperConstructor, new Foo)
+      class Child extends Parent {
+        constructor(superConstructor, foo) {
+          superConstructor()
+          this.childFoo = foo
+        }
+      }
+      annotate(Child, new Inject(SuperConstructor, Foo))
 
-    //   class GrandChild extends Child {
-    //     constructor(bar, superConstructor, foo) {
-    //       superConstructor()
-    //       this.grandChildBar = bar
-    //       this.grandChildFoo = foo
-    //     }
-    //   }
-    //   annotate(GrandChild, new SuperConstructor, new Foo)
+      class GrandChild extends Child {
+        constructor(superConstructor, foo, bar) {
+          superConstructor()
+          this.grandChildBar = bar
+          this.grandChildFoo = foo
+        }
+      }
 
-    //   var injector = new Injector()
-    //   var instance = injector.get(GrandChild)
+      annotate(GrandChild, new Inject(SuperConstructor, Foo, Bar))
 
-    //   expect(instance.parentFoo).toBeInstanceOf(Foo)
-    //   expect(instance.childFoo).toBeInstanceOf(Foo)
-    //   expect(instance.grandChildFoo).toBeInstanceOf(Foo)
-    //   expect(instance.grandChildBar).toBeInstanceOf(Bar)
-    // })
+      var injector = new Injector()
+      var instance = injector.get(GrandChild)
+
+      expect(instance.parentFoo).toBeInstanceOf(Foo)
+      expect(instance.childFoo).toBeInstanceOf(Foo)
+      expect(instance.grandChildFoo).toBeInstanceOf(Foo)
+      expect(instance.grandChildBar).toBeInstanceOf(Bar)
+    })
 
     it('should throw an error when used in a factory function', function() {
       class Something {}
