@@ -1,6 +1,6 @@
 TODO: explain the motivation for this fork. And update this README
 
-some tests were commented out becouse custome jasmine matchers not working.
+some tests were commented out because custome jasmine matchers not working.
 
 also, tests regarding types were completely removed
 
