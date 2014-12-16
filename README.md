@@ -15,11 +15,11 @@ npm install
 ```
 
 ### Transpiling ES6
-All the source code is written in the upcoming version of JavaScript - ES6. In order to use it in the current browsers you need to transpile the code into ES5 using [6to5].
+All the source code is written in the upcoming version of JavaScript - ES6. In order to use it in the current browsers/nodejs you need to transpile the code into ES5 using [6to5].
 
 
 ```bash
-# Transpile ES6 into ./commonjs/* and test ([jest]()) the source files
+# Transpile ES6 into ./commonjs/* and test (jest) the source files
 $ npm test
 
 # Watch all the sources and transpile/test/jshint on any change
