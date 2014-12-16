@@ -30,6 +30,5 @@
   "scripts": {
     "test": "./node_modules/.bin/gulp build",
     "dev": "./node_modules/.bin/gulp watch build jshint"
-  },
-  "private": true
+  }
 }
