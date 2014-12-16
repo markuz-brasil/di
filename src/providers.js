@@ -1,5 +1,5 @@
-import {SuperConstructor as SuperConstructorAnnotation, readAnnotations} from './annotations';
-import {isClass, isFunction, isObject, toString} from './util';
+import {SuperConstructor as SuperConstructorAnnotation, readAnnotations} from './annotations'
+import {isClass, isFunction, isObject, toString} from './util'
 
 
 // Provider is responsible for creating instances.
@@ -15,7 +15,7 @@ import {isClass, isFunction, isObject, toString} from './util';
 // then calls `provider.create(args)`, passing in these arguments.
 
 
-var EmptyFunction = Object.getPrototypeOf(Function);
+var EmptyFunction = Object.getPrototypeOf(Function)
 
 
 // ClassProvider knows how to instantiate classes.
@@ -29,14 +29,14 @@ var EmptyFunction = Object.getPrototypeOf(Function);
 class ClassProvider {
   constructor(clazz, params, isPromise) {
     // TODO(vojta): can we hide this.provider? (only used for hasAnnotation(provider.provider))
-    this.provider = clazz;
-    this.isPromise = isPromise;
+    this.provider = clazz
+    this.isPromise = isPromise
 
-    this.params = [];
-    this._constructors = [];
+    this.params = []
+    this._constructors = []
 
-    this._flattenParams(clazz, params);
-    this._constructors.unshift([clazz, 0, this.params.length - 1]);
+    this._flattenParams(clazz, params)
+    this._constructors.unshift([clazz, 0, this.params.length - 1])
   }
 
   // Normalize params for all the constructors (in the case of inheritance),
@@ -47,23 +47,23 @@ class ClassProvider {
   // but it is only called during the constructor.
   // TODO(vojta): remove the annotations argument?
   _flattenParams(constructor, params) {
-    var SuperConstructor;
-    var constructorInfo;
+    var SuperConstructor
+    var constructorInfo
 
     for (var param of params) {
       if (param.token === SuperConstructorAnnotation) {
-        SuperConstructor = Object.getPrototypeOf(constructor);
+        SuperConstructor = Object.getPrototypeOf(constructor)
 
         if (SuperConstructor === EmptyFunction) {
-          throw new Error(`${toString(constructor)} does not have a parent constructor. Only classes with a parent can ask for SuperConstructor!`);
+          throw new Error(`${toString(constructor)} does not have a parent constructor. Only classes with a parent can ask for SuperConstructor!`)
         }
 
-        constructorInfo = [SuperConstructor, this.params.length];
-        this._constructors.push(constructorInfo);
-        this._flattenParams(SuperConstructor, readAnnotations(SuperConstructor).params);
-        constructorInfo.push(this.params.length - 1);
+        constructorInfo = [SuperConstructor, this.params.length]
+        this._constructors.push(constructorInfo)
+        this._flattenParams(SuperConstructor, readAnnotations(SuperConstructor).params)
+        constructorInfo.push(this.params.length - 1)
       } else {
-        this.params.push(param);
+        this.params.push(param)
       }
     }
   }
@@ -72,36 +72,36 @@ class ClassProvider {
   // We get arguments for all the constructors as a single flat array.
   // This method generates pre-bound "superConstructor" wrapper with correctly passing arguments.
   _createConstructor(currentConstructorIdx, context, allArguments) {
-    var constructorInfo = this._constructors[currentConstructorIdx];
-    var nextConstructorInfo = this._constructors[currentConstructorIdx + 1];
-    var argsForCurrentConstructor;
+    var constructorInfo = this._constructors[currentConstructorIdx]
+    var nextConstructorInfo = this._constructors[currentConstructorIdx + 1]
+    var argsForCurrentConstructor
 
     if (nextConstructorInfo) {
       argsForCurrentConstructor = allArguments
           .slice(constructorInfo[1], nextConstructorInfo[1])
           .concat([this._createConstructor(currentConstructorIdx + 1, context, allArguments)])
-          .concat(allArguments.slice(nextConstructorInfo[2] + 1, constructorInfo[2] + 1));
+          .concat(allArguments.slice(nextConstructorInfo[2] + 1, constructorInfo[2] + 1))
     } else {
-      argsForCurrentConstructor = allArguments.slice(constructorInfo[1], constructorInfo[2] + 1);
+      argsForCurrentConstructor = allArguments.slice(constructorInfo[1], constructorInfo[2] + 1)
     }
 
     return function InjectedAndBoundSuperConstructor() {
       // TODO(vojta): throw if arguments given
-      return constructorInfo[0].apply(context, argsForCurrentConstructor);
-    };
+      return constructorInfo[0].apply(context, argsForCurrentConstructor)
+    }
   }
 
   // It is called by injector to create an instance.
   create(args) {
-    var context = Object.create(this.provider.prototype);
-    var constructor = this._createConstructor(0, context, args);
-    var returnedValue = constructor();
+    var context = Object.create(this.provider.prototype)
+    var constructor = this._createConstructor(0, context, args)
+    var returnedValue = constructor()
 
     if (isFunction(returnedValue) || isObject(returnedValue)) {
-      return returnedValue;
+      return returnedValue
     }
 
-    return context;
+    return context
   }
 }
 
@@ -110,27 +110,27 @@ class ClassProvider {
 // - all the state is immutable
 class FactoryProvider {
   constructor(factoryFunction, params, isPromise) {
-    this.provider = factoryFunction;
-    this.params = params;
-    this.isPromise = isPromise;
+    this.provider = factoryFunction
+    this.params = params
+    this.isPromise = isPromise
 
     for (var param of params) {
       if (param.token === SuperConstructorAnnotation) {
-        throw new Error(`${toString(factoryFunction)} is not a class. Only classes with a parent can ask for SuperConstructor!`);
+        throw new Error(`${toString(factoryFunction)} is not a class. Only classes with a parent can ask for SuperConstructor!`)
       }
     }
   }
 
   create(args) {
-    return this.provider.apply(undefined, args);
+    return this.provider.apply(undefined, args)
   }
 }
 
 
 export function createProviderFromFnOrClass(fnOrClass, annotations) {
   if (isClass(fnOrClass)) {
-    return new ClassProvider(fnOrClass, annotations.params, annotations.provide.isPromise);
+    return new ClassProvider(fnOrClass, annotations.params, annotations.provide.isPromise)
   }
 
-  return new FactoryProvider(fnOrClass, annotations.params, annotations.provide.isPromise);
+  return new FactoryProvider(fnOrClass, annotations.params, annotations.provide.isPromise)
 }

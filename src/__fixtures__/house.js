@@ -28,4 +28,4 @@ annotate(Kitchen, new Inject('Sink'))
 //   nothing() {}
 // }
 
-export var house = [House, Kitchen];
+export var house = [House, Kitchen]

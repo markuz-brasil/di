@@ -34,6 +34,6 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/gulp build",
-    "dev": "./node_modules/.bin/gulp watch build jshint"
+    "dev": "./node_modules/.bin/gulp watch build jshint || echo ''"
   }
 }

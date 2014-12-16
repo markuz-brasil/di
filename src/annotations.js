@@ -1,4 +1,4 @@
-import {isFunction} from './util';
+import {isFunction} from './util'
 
 
 // This module contains:
@@ -11,47 +11,47 @@ import {isFunction} from './util';
 // A built-in token.
 // Used to ask for pre-injected parent constructor.
 // A class constructor can ask for this.
-class SuperConstructor {}
+export class SuperConstructor {}
 
 // A built-in scope.
 // Never cache.
-class TransientScope {}
+export class TransientScope {}
 
-class Inject {
+export class Inject {
   constructor(...tokens) {
-    this.tokens = tokens;
-    this.isPromise = false;
-    this.isLazy = false;
+    this.tokens = tokens
+    this.isPromise = false
+    this.isLazy = false
   }
 }
 
-class InjectPromise extends Inject {
+export class InjectPromise extends Inject {
   constructor(...tokens) {
-    this.tokens = tokens;
-    this.isPromise = true;
-    this.isLazy = false;
+    this.tokens = tokens
+    this.isPromise = true
+    this.isLazy = false
   }
 }
 
-class InjectLazy extends Inject {
+export class InjectLazy extends Inject {
   constructor(...tokens) {
-    this.tokens = tokens;
-    this.isPromise = false;
-    this.isLazy = true;
+    this.tokens = tokens
+    this.isPromise = false
+    this.isLazy = true
   }
 }
 
-class Provide {
+export class Provide {
   constructor(token) {
-    this.token = token;
-    this.isPromise = false;
+    this.token = token
+    this.isPromise = false
   }
 }
 
-class ProvidePromise extends Provide {
+export class ProvidePromise extends Provide {
   constructor(token) {
-    this.token = token;
-    this.isPromise = true;
+    this.token = token
+    this.isPromise = true
   }
 }
 
@@ -60,35 +60,35 @@ class ProvidePromise extends Provide {
 
 // Append annotation on a function or class.
 // This can be helpful when not using ES6+.
-function annotate(fn, annotation) {
+export function annotate(fn, annotation) {
 
   if (fn.annotations === Object.getPrototypeOf(fn).annotations) {
     fn.annotations = []
   }
 
-  fn.annotations = fn.annotations || [];
-  fn.annotations.push(annotation);
+  fn.annotations = fn.annotations || []
+  fn.annotations.push(annotation)
 }
 
 
 // Read annotations on a function or class and return whether given annotation is present.
-function hasAnnotation(fn, annotationClass) {
+export function hasAnnotation(fn, annotationClass) {
   if (!fn.annotations || fn.annotations.length === 0) {
-    return false;
+    return false
   }
 
   for (var annotation of fn.annotations) {
     if (annotation instanceof annotationClass) {
-      return true;
+      return true
     }
   }
 
-  return false;
+  return false
 }
 
 
 // Read annotations on a function or class and collect "interesting" metadata:
-function readAnnotations(fn) {
+export function readAnnotations(fn) {
   var collectedAnnotations = {
     // Description of the provided value.
     provide: {
@@ -102,7 +102,7 @@ function readAnnotations(fn) {
     // - isPromise (boolean)
     // - isLazy (boolean)
     params: []
-  };
+  }
 
   if (fn.annotations && fn.annotations.length) {
     for (var annotation of fn.annotations) {
@@ -112,13 +112,13 @@ function readAnnotations(fn) {
             token: token,
             isPromise: annotation.isPromise,
             isLazy: annotation.isLazy
-          });
-        });
+          })
+        })
       }
 
       if (annotation instanceof Provide) {
-        collectedAnnotations.provide.token = annotation.token;
-        collectedAnnotations.provide.isPromise = annotation.isPromise;
+        collectedAnnotations.provide.token = annotation.token
+        collectedAnnotations.provide.isPromise = annotation.isPromise
       }
     }
   }
@@ -133,32 +133,17 @@ function readAnnotations(fn) {
             token: paramAnnotation,
             isPromise: false,
             isLazy: false
-          };
+          }
         } else if (paramAnnotation instanceof Inject) {
           collectedAnnotations.params[idx] = {
             token: paramAnnotation.tokens[0],
             isPromise: paramAnnotation.isPromise,
             isLazy: paramAnnotation.isLazy
-          };
+          }
         }
       }
-    });
+    })
   }
 
-  return collectedAnnotations;
+  return collectedAnnotations
 }
-
-
-export {
-  annotate,
-  hasAnnotation,
-  readAnnotations,
-
-  SuperConstructor,
-  TransientScope,
-  Inject,
-  InjectPromise,
-  InjectLazy,
-  Provide,
-  ProvidePromise
-};

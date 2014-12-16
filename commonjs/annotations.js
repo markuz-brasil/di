@@ -13,26 +13,16 @@ var _extends = function (child, parent) {
   child.__proto__ = parent;
 };
 
+exports.annotate = annotate;
+exports.hasAnnotation = hasAnnotation;
+exports.readAnnotations = readAnnotations;
 var isFunction = require('./util').isFunction;
-
-
-
-// This module contains:
-// - built-in annotation classes
-// - helpers to read/write annotations
-
-
-// ANNOTATIONS
-
-// A built-in token.
-// Used to ask for pre-injected parent constructor.
-// A class constructor can ask for this.
 var SuperConstructor = function SuperConstructor() {};
 
-// A built-in scope.
-// Never cache.
+exports.SuperConstructor = SuperConstructor;
 var TransientScope = function TransientScope() {};
 
+exports.TransientScope = TransientScope;
 var Inject = function Inject() {
   var tokens = _slice.call(arguments);
 
@@ -41,6 +31,7 @@ var Inject = function Inject() {
   this.isLazy = false;
 };
 
+exports.Inject = Inject;
 var InjectPromise = (function (Inject) {
   var InjectPromise = function InjectPromise() {
     var tokens = _slice.call(arguments);
@@ -55,6 +46,7 @@ var InjectPromise = (function (Inject) {
   return InjectPromise;
 })(Inject);
 
+exports.InjectPromise = InjectPromise;
 var InjectLazy = (function (Inject) {
   var InjectLazy = function InjectLazy() {
     var tokens = _slice.call(arguments);
@@ -69,11 +61,13 @@ var InjectLazy = (function (Inject) {
   return InjectLazy;
 })(Inject);
 
+exports.InjectLazy = InjectLazy;
 var Provide = function Provide(token) {
   this.token = token;
   this.isPromise = false;
 };
 
+exports.Provide = Provide;
 var ProvidePromise = (function (Provide) {
   var ProvidePromise = function ProvidePromise(token) {
     this.token = token;
@@ -85,13 +79,7 @@ var ProvidePromise = (function (Provide) {
   return ProvidePromise;
 })(Provide);
 
-
-
-
-// HELPERS
-
-// Append annotation on a function or class.
-// This can be helpful when not using ES6+.
+exports.ProvidePromise = ProvidePromise;
 function annotate(fn, annotation) {
   if (fn.annotations === Object.getPrototypeOf(fn).annotations) {
     fn.annotations = [];
@@ -102,7 +90,6 @@ function annotate(fn, annotation) {
 }
 
 
-// Read annotations on a function or class and return whether given annotation is present.
 function hasAnnotation(fn, annotationClass) {
   if (!fn.annotations || fn.annotations.length === 0) {
     return false;
@@ -119,7 +106,6 @@ function hasAnnotation(fn, annotationClass) {
 }
 
 
-// Read annotations on a function or class and collect "interesting" metadata:
 function readAnnotations(fn) {
   var collectedAnnotations = {
     // Description of the provided value.
@@ -181,16 +167,4 @@ function readAnnotations(fn) {
 
   return collectedAnnotations;
 }
-
-
-exports.annotate = annotate;
-exports.hasAnnotation = hasAnnotation;
-exports.readAnnotations = readAnnotations;
-exports.SuperConstructor = SuperConstructor;
-exports.TransientScope = TransientScope;
-exports.Inject = Inject;
-exports.InjectPromise = InjectPromise;
-exports.InjectLazy = InjectLazy;
-exports.Provide = Provide;
-exports.ProvidePromise = ProvidePromise;
 //# sourceMappingURL=maps/annotations.js.map

@@ -22,7 +22,7 @@ gulp.task('jshint', function () {
   return gulp.src('src/**/*.js')
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
-});
+})
 
 // Actual build task
 gulp.task('build',['clean'], function(next){
@@ -35,6 +35,7 @@ gulp.task('compile', function (next) {
     .pipe($.cached('compile', {optimizeMemory: true}))
     .pipe($.sourcemaps.init({loadMaps: true}))
     .pipe($['6to5']()).on('error', next)
+    .on('error', function(){})
     .pipe($.sourcemaps.write('./maps'))
     .pipe(gulp.dest('./commonjs'))
     .pipe($.size({title: 'compiled'}))
