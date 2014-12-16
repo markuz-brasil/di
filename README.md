@@ -12,6 +12,7 @@ git clone --depth=1 https://github.com/markuz-brasil/tau-di
 
 # Install all the the dev dependencies.
 npm install
+```
 
 ### Transpiling ES6
 All the source code is written in the upcoming version of JavaScript - ES6. In order to use it in the current browsers you need to transpile the code into ES5 using [6to5].
