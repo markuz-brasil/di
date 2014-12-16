@@ -6,6 +6,11 @@
   "author": {
     "name": "markuz brasil"
   },
+  "homepage": "https://github.com/markuz-brasil/tau-di",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markuz-brasil/tau-di.git"
+  },
   "dependencies": {
     "6to5": "^1.9.10"
   },

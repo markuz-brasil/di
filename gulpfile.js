@@ -26,18 +26,18 @@ gulp.task('jshint', function () {
 
 // Actual build task
 gulp.task('build',['clean'], function(next){
-  runSequence('commonjs', 'test', next)
+  runSequence('compile', 'test', next)
 })
 
 // Compile ES6 -> ES5
-gulp.task('commonjs', function (next) {
+gulp.task('compile', function (next) {
   return gulp.src('./src/**/*.js')
-    .pipe($.cached('commonjs', {optimizeMemory: true}))
+    .pipe($.cached('compile', {optimizeMemory: true}))
     .pipe($.sourcemaps.init({loadMaps: true}))
     .pipe($['6to5']()).on('error', next)
-    .pipe($.sourcemaps.write())
+    .pipe($.sourcemaps.write('./maps'))
     .pipe(gulp.dest('./commonjs'))
-    .pipe($.size({title: 'cjs: DI'}))
+    .pipe($.size({title: 'compiled'}))
 })
 
 // Run jest testing framework
@@ -67,7 +67,7 @@ gulp.task('watch', function(next){
   log("Starting '"+ cyan('watch:assets') +"'...")
 
   gulp.watch('./gulpfile.js', runTasks('restart'))
-  gulp.watch('./src/**/*.js', runTasks(['jshint', 'commonjs'], 'test'))
+  gulp.watch('./src/**/*.js', runTasks(['jshint', 'compile'], 'test'))
 
   next()
 })
