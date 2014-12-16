@@ -1,71 +1,84 @@
 'use strict'
+var path = require('path')
+var fs = require('fs')
 
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var runSequence = require('run-sequence');
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
-
-var watch = require('./etc/watchers');
-var CFG = require('./etc/config');
+var thr = require('through2').obj
+var jest = require('jest-cli')
 
 var log = $.util.log
 var red = $.util.colors.red
 var cyan = $.util.colors.cyan
 var mag = $.util.colors.magenta
 
-// Load custom tasks from the `tasks` directory
-try { require('require-dir')('etc'); } catch (err) { console.error(err) }
-
 // Clean Output Directory
-// gulp.task('clean', del.bind(null, [PUB], {force: true}));
-// gulp.task('clean:all', del.bind(null, [TMP], {force: true}));
+gulp.task('clean', del.bind(null, ['commonjs'], {dot: true}))
 
-// TODO: add comments
-gulp.task('default', ['build'])
+// Lint ES6 JavaScript
+gulp.task('jshint', function () {
+  return gulp.src('src/**/*.js')
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('jshint-stylish'))
+});
 
-// TODO: add comments
-gulp.task('build', ['clean'], function(next){
-  runSequence('assets', function(){
-    if (browserSync.active) { gulp.start('reload') }
+// Actual build task
+gulp.task('build',['clean'], function(next){
+  runSequence('commonjs', 'test', next)
+})
+
+// Compile ES6 -> ES5
+gulp.task('commonjs', function (next) {
+  return gulp.src('./src/**/*.js')
+    .pipe($.cached('commonjs', {optimizeMemory: true}))
+    .pipe($.sourcemaps.init({loadMaps: true}))
+    .pipe($['6to5']()).on('error', next)
+    .pipe($.sourcemaps.write())
+    .pipe(gulp.dest('./commonjs'))
+    .pipe($.size({title: 'cjs: DI'}))
+})
+
+// Run jest testing framework
+gulp.task('test', function(next){
+  var cfg = {
+    config: {
+      rootDir: './commonjs',
+      setupTestFrameworkScriptFile: '<rootDir>/__fixtures__/jasmine_matchers.js',
+    }
+  }
+
+  jest.runCLI(cfg, process.cwd(), function(ok){
+    if (!ok) log(red('jest error'))
     next()
   })
 })
 
-var BS
-// TODO: add comments
-gulp.task('serve', function (next) {
-  CFG.browserSync.browser = CFG.browserSync.browser || 'skip'
-
-  browserSync(CFG.browserSync, function(err, bs){
-    if (err) {throw err}
-    BS = bs
-    log("Loaded '"+ cyan('browserSync') +"'...")
-    next()
-  });
-});
-
-// TODO: add comments
-gulp.task('reload', function(next){
-
-  if (!CFG.tasks.serve) return next()
-
-  browserSync.reload()
-  BS.logger.info('Local URL: '+ mag(BS.options.urls.local))
-  BS.logger.info('External URL: '+ mag(BS.options.urls.external))
-  next()
-});
-
-// TODO: add comments
+// Quit task if gulpfile changed
 gulp.task('restart', function(){
   log(red(':: restarting ::'))
   process.exit(0)
 })
 
-// // TODO: add comments
+// Setup watchers
 gulp.task('watch', function(next){
-  watch.gulpfile()
-  watch.assets()
+  log("Starting '"+ cyan('watch:gulpfile') +"'...")
+  log("Starting '"+ cyan('watch:assets') +"'...")
+
+  gulp.watch('./gulpfile.js', runTasks('restart'))
+  gulp.watch('./src/**/*.js', runTasks(['jshint', 'commonjs'], 'test'))
+
   next()
 })
+
+// Helper functions used by the watchers
+function runTasks () {
+  var args = [].slice.call(arguments)
+  return function (evt) {
+    if ('changed' !== evt.type) return
+    // bug on runSequece.
+    // this JSON trick is cleanest way to deep copy a simple, non-circular array.
+    runSequence.apply(runSequence, JSON.parse(JSON.stringify(args)))
+  }
+}

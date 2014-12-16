@@ -1,3 +1,5 @@
+/*jshint -W069 */
+
 import {toString} from './util';
 
 

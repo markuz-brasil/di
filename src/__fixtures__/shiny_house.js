@@ -13,4 +13,4 @@ export class ShinyHouse {
 annotate(ShinyHouse, new Provide('House'))
 annotate(ShinyHouse, new Inject('Kitchen'))
 
-export var module = [ShinyHouse];
+export var house = [ShinyHouse];

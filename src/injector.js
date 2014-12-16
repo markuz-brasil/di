@@ -1,3 +1,5 @@
+/* jshint -W083 */
+
 import {
   annotate,
   readAnnotations,

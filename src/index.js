@@ -1,6 +1,7 @@
 // PUBLIC API
+/* jshint -W030 */
 
-export {Injector} from './injector';
+export { Injector } from './injector'
 export {
   annotate,
   hasAnnotation,
@@ -12,4 +13,4 @@ export {
   ProvidePromise,
   SuperConstructor,
   TransientScope
-} from './annotations';
+} from './annotations'

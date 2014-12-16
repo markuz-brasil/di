@@ -3,13 +3,9 @@ import '6to5/polyfill'
 
 import {
   annotate,
-  hasAnnotation,
-  readAnnotations,
   Injector,
   Inject,
-  InjectLazy,
   InjectPromise,
-  Provide,
   ProvidePromise,
   TransientScope
 } from '../index'
@@ -19,7 +15,7 @@ class UserList {}
 // An async provider.
 annotate(fetchUsers, new ProvidePromise(UserList))
 function fetchUsers() {
-  return Promise.resolve(new UserList)
+  return Promise.resolve(new UserList())
 }
 
 class SynchronousUserList {}
@@ -64,10 +60,12 @@ describe('async', function() {
   // regression
   it('should return promise even if the provider is sync, from cache', function() {
     var injector = new Injector()
+    /* jshint -W004 */
     var p1 = injector.getPromise(SynchronousUserList)
-    var p2 = injector.getPromise(SynchronousUserList)
+    var p1 = injector.getPromise(SynchronousUserList)
+    /* jshint +W004 */
 
-    expect(p2).toBePromiseLike()
+    expect(p1).toBePromiseLike()
   })
 
   pit('should return promise when a dependency is async', function() {
@@ -110,7 +108,7 @@ describe('async', function() {
         this.list = list
       }
     }
-    annotate(NeverCachedUserController, new TransientScope)
+    annotate(NeverCachedUserController, new TransientScope())
     annotate(NeverCachedUserController, new Inject(UserList))
 
     var injector = new Injector([fetchUsers])

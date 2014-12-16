@@ -3,22 +3,17 @@ import '6to5/polyfill'
 
 import {
   annotate,
-  hasAnnotation,
-  readAnnotations,
   Injector,
   Inject,
   InjectLazy,
-  InjectPromise,
   Provide,
-  ProvidePromise,
   SuperConstructor,
   TransientScope
 } from '../index'
 
 import {Car, CyclicEngine} from '../__fixtures__/car'
-import {module as houseModule} from '../__fixtures__/house'
-import {module as shinyHouseModule} from '../__fixtures__/shiny_house'
-
+import {house as houseModule} from '../__fixtures__/house'
+import {house as shinyHouseModule} from '../__fixtures__/shiny_house'
 
 describe('injector', function() {
 
@@ -275,7 +270,7 @@ describe('injector', function() {
 
     it('should never cache', function() {
       class Foo {}
-      annotate(Foo, new TransientScope)
+      annotate(Foo, new TransientScope())
 
       var injector = new Injector()
       expect(injector.get(Foo)).not.toBe(injector.get(Foo))
@@ -283,14 +278,14 @@ describe('injector', function() {
 
     it('should always use dependencies (default providers) from the youngest injector', function() {
       class Foo {}
-      annotate(Foo, new Inject)
+      annotate(Foo, new Inject())
 
       class AlwaysNewInstance {
         constructor(foo) {
           this.foo = foo
         }
       }
-      annotate(AlwaysNewInstance, new TransientScope)
+      annotate(AlwaysNewInstance, new TransientScope())
       annotate(AlwaysNewInstance, new Inject(Foo))
 
       var injector = new Injector()
@@ -310,14 +305,14 @@ describe('injector', function() {
 
     it('should always use dependencies from the youngest injector', function() {
       class Foo {}
-      annotate(Foo, new Inject)
+      annotate(Foo, new Inject())
 
       class AlwaysNewInstance {
         constructor(foo) {
           this.foo = foo
         }
       }
-      annotate(AlwaysNewInstance, new TransientScope)
+      annotate(AlwaysNewInstance, new TransientScope())
       annotate(AlwaysNewInstance, new Inject(Foo))
 
       var injector = new Injector([AlwaysNewInstance])
@@ -386,7 +381,7 @@ describe('injector', function() {
 
         start() {}
       }
-      annotate(Car, new RouteScope)
+      annotate(Car, new RouteScope())
       annotate(Car, new Inject(Engine))
 
       var parent = new Injector([Car, Engine])
@@ -409,7 +404,7 @@ describe('injector', function() {
       class MockEngine {
         start() {}
       }
-      annotate(MockEngine, new RouteScope)
+      annotate(MockEngine, new RouteScope())
       annotate(MockEngine, new Provide(Engine))
 
       var parent = new Injector([MockEngine])
@@ -431,20 +426,20 @@ describe('injector', function() {
         constructor() {}
         start() {}
       }
-      annotate(Engine, new RouteScope)
+      annotate(Engine, new RouteScope())
 
       class MockEngine {
         constructor() {}
         start() {}
       }
       annotate(MockEngine, new Provide(Engine))
-      annotate(MockEngine, new RouteScope)
+      annotate(MockEngine, new RouteScope())
 
       class DoubleMockEngine {
         start() {}
       }
       annotate(DoubleMockEngine, new Provide(Engine))
-      annotate(DoubleMockEngine, new RouteScope)
+      annotate(DoubleMockEngine, new RouteScope())
 
       var parent = new Injector([Engine])
       var child = parent.createChild([MockEngine])
@@ -477,7 +472,7 @@ describe('injector', function() {
 
     it('should cache default provider in parent injector', function() {
       class Foo {}
-      annotate(Foo, new Inject)
+      annotate(Foo, new Inject())
 
       var parent = new Injector()
       var child = parent.createChild([])
@@ -492,8 +487,8 @@ describe('injector', function() {
       class RequestScope {}
 
       class Foo {}
-      annotate(Foo, new Inject)
-      annotate(Foo, new RequestScope)
+      annotate(Foo, new Inject())
+      annotate(Foo, new RequestScope())
 
       var parent = new Injector()
       var child = parent.createChild([], [RequestScope])
@@ -582,7 +577,7 @@ describe('injector', function() {
             this.power = power
           }
         }
-        annotate(ExpensiveEngine, new TransientScope)
+        annotate(ExpensiveEngine, new TransientScope())
         annotate(ExpensiveEngine, new Inject('power'))
 
         class Car {

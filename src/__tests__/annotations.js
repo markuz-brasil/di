@@ -29,7 +29,7 @@ describe('hasAnnotation', function() {
 
     class SomeAnnotation {}
 
-    annotate(foo, new SomeAnnotation)
+    annotate(foo, new SomeAnnotation())
     function foo() {}
 
     expect(hasAnnotation(foo, SomeAnnotation)).toBe(true)
@@ -41,7 +41,7 @@ describe('hasAnnotation', function() {
     class YepAnnotation {}
     class NopeAnnotation {}
 
-    annotate(foo, new YepAnnotation)
+    annotate(foo, new YepAnnotation())
     function foo() {}
 
     expect(hasAnnotation(foo, NopeAnnotation)).toBe(false)
