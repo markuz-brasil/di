@@ -1,15 +1,15 @@
 {
-  "name": "tau-di",
+  "name": "dep-in",
   "version": "0.0.1",
   "description": "Dependency Injection Library",
   "main": "commonjs/index.js",
   "author": {
     "name": "markuz brasil"
   },
-  "homepage": "https://github.com/markuz-brasil/tau-di",
+  "homepage": "https://github.com/markuz-brasil/dep-in",
   "repository": {
     "type": "git",
-    "url": "https://github.com/markuz-brasil/tau-di.git"
+    "url": "https://github.com/markuz-brasil/dep-in.git"
   },
   "dependencies": {
     "6to5": "^1.9.10"
