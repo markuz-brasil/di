@@ -8,7 +8,7 @@ This readme describes how to set up your working space in order to run the tests
 
 ```bash
 # Clone this repo (or your fork).
-git clone --depth=1 https://github.com/markuz-brasil/tau-di
+git clone --depth=1 https://github.com/markuz-brasil/dep-in.git
 
 # Install all the the dev dependencies.
 npm install
