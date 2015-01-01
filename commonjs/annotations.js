@@ -23,6 +23,9 @@ exports.SuperConstructor = SuperConstructor;
 var TransientScope = function TransientScope() {};
 
 exports.TransientScope = TransientScope;
+var Factory = function Factory() {};
+
+exports.Factory = Factory;
 var Inject = function Inject() {
   var tokens = _slice.call(arguments);
 

@@ -1,5 +1,5 @@
-import {SuperConstructor as SuperConstructorAnnotation, readAnnotations} from './annotations'
-import {isClass, isFunction, isObject, toString} from './util'
+import {SuperConstructor as SuperConstructorAnnotation, readAnnotations, hasAnnotation, Factory} from './annotations'
+import {isFunction, isObject, toString} from './util'
 
 
 // Provider is responsible for creating instances.
@@ -127,10 +127,11 @@ class FactoryProvider {
 }
 
 
-export function createProviderFromFnOrClass(fnOrClass, annotations) {
-  if (isClass(fnOrClass)) {
-    return new ClassProvider(fnOrClass, annotations.params, annotations.provide.isPromise)
+export function createProviderFromFnOrClass(ClassOrFactory, annotations) {
+
+  if (hasAnnotation(ClassOrFactory, Factory)) {
+    return new FactoryProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise)
   }
 
-  return new FactoryProvider(fnOrClass, annotations.params, annotations.provide.isPromise)
+  return new ClassProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise)
 }

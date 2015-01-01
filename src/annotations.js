@@ -17,6 +17,8 @@ export class SuperConstructor {}
 // Never cache.
 export class TransientScope {}
 
+export class Factory {}
+
 export class Inject {
   constructor(...tokens) {
     this.tokens = tokens

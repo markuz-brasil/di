@@ -5,11 +5,11 @@ import {
   readAnnotations,
   hasAnnotation,
   Provide as ProvideAnnotation,
+  Factory as FactoryAnnotation,
   TransientScope as TransientScopeAnnotation
 } from './annotations'
 
 import {isFunction, toString} from './util'
-import {profileInjector} from './profiler'
 import {createProviderFromFnOrClass} from './providers'
 
 
@@ -50,7 +50,6 @@ class Injector {
 
     this._loadModules(modules)
 
-    profileInjector(this, Injector)
   }
 
 
@@ -167,6 +166,7 @@ class Injector {
                 return args[ii + 1]
               }
 
+              annotate(fn, new FactoryAnnotation())
               annotate(fn, new ProvideAnnotation(args[ii]))
 
               return fn

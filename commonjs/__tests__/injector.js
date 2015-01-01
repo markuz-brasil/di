@@ -108,13 +108,13 @@ describe("injector", function () {
     var Size = function Size() {};
 
     annotate(computeSize, new Provide(Size));
+    computeSize.prototype.constructor = null;
     function computeSize() {
       return 0;
     }
 
     var injector = new Injector([computeSize]);
     var size = injector.get(Size);
-
     expect(size).toBe(0);
   });
 

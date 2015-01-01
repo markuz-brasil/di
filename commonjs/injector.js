@@ -4,10 +4,10 @@ var annotate = require('./annotations').annotate;
 var readAnnotations = require('./annotations').readAnnotations;
 var hasAnnotation = require('./annotations').hasAnnotation;
 var ProvideAnnotation = require('./annotations').Provide;
+var FactoryAnnotation = require('./annotations').Factory;
 var TransientScopeAnnotation = require('./annotations').TransientScope;
 var isFunction = require('./util').isFunction;
 var toString = require('./util').toString;
-var profileInjector = require('./profiler').profileInjector;
 var createProviderFromFnOrClass = require('./providers').createProviderFromFnOrClass;
 
 
@@ -51,8 +51,6 @@ var Injector = (function () {
     this._scopes = scopes;
 
     this._loadModules(modules);
-
-    profileInjector(this, Injector);
   };
 
   Injector.prototype._collectProvidersWithAnnotation = function (annotationClass, collectedProviders) {
@@ -159,6 +157,7 @@ var Injector = (function () {
                 return args[ii + 1];
               };
 
+              annotate(fn, new FactoryAnnotation());
               annotate(fn, new ProvideAnnotation(args[ii]));
 
               return fn;

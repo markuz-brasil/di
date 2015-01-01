@@ -26,7 +26,7 @@ gulp.task('jshint', function () {
 
 // Actual build task
 gulp.task('build',['clean'], function(next){
-  runSequence('compile', 'test', next)
+  runSequence('compile', next)
 })
 
 // Compile ES6 -> ES5
@@ -68,7 +68,7 @@ gulp.task('watch', function(next){
   log("Starting '"+ cyan('watch:assets') +"'...")
 
   gulp.watch('./gulpfile.js', runTasks('restart'))
-  gulp.watch('./src/**/*.js', runTasks(['jshint', 'compile'], 'test'))
+  gulp.watch('./src/**/*.js', runTasks(['compile']))
 
   next()
 })
