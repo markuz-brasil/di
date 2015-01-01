@@ -26,6 +26,9 @@ exports.TransientScope = TransientScope;
 var Factory = function Factory() {};
 
 exports.Factory = Factory;
+var Type = function Type() {};
+
+exports.Type = Type;
 var Inject = function Inject() {
   var tokens = _slice.call(arguments);
 

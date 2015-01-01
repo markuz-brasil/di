@@ -7,6 +7,7 @@ import {
   Inject,
   InjectLazy,
   Provide,
+  Type,
   SuperConstructor,
   TransientScope
 } from '../index'
@@ -19,9 +20,9 @@ describe('injector', function() {
 
   it('should instantiate a class without dependencies', function() {
     class Car {
-      constructor() {}
       start() {}
     }
+    annotate(Car, new Type())
 
     var injector = new Injector()
     var car = injector.get(Car)
@@ -33,6 +34,7 @@ describe('injector', function() {
     class Engine {
       start() {}
     }
+    annotate(Engine, new Type())
 
     class Car {
       constructor(engine) {
@@ -41,6 +43,7 @@ describe('injector', function() {
 
       start() {}
     }
+    annotate(Car, new Type())
     annotate(Car, new Inject(Engine))
 
     var injector = new Injector()
@@ -52,6 +55,7 @@ describe('injector', function() {
 
   it('should override providers', function() {
     class Engine {}
+    annotate(Engine, new Type())
 
     class Car {
       constructor(engine) {
@@ -60,11 +64,13 @@ describe('injector', function() {
 
       start() {}
     }
+    annotate(Car, new Type())
     annotate(Car, new Inject(Engine))
 
     class MockEngine {
       start() {}
     }
+    annotate(MockEngine, new Type())
     annotate(MockEngine, new Provide(Engine))
 
     var injector = new Injector([MockEngine])
@@ -78,7 +84,6 @@ describe('injector', function() {
     class Size {}
 
     annotate(computeSize, new Provide(Size))
-    computeSize.prototype.constructor = null
     function computeSize() {
       return 0
     }
@@ -136,98 +141,16 @@ describe('injector', function() {
       .toThrowError(/Error during instantiation of Engine! \(Car -> Engine\)/)
   })
 
-  describe('SuperConstructor', function () {
+  it('should throw an error when used in a class without any parent', function() {
+    class WithoutParent {}
+    annotate(WithoutParent, new Inject(SuperConstructor))
 
-    it('should support "super" to call a parent constructor', function() {
-      class Something {}
+    var injector = new Injector()
 
-      class Parent {
-        constructor(something) {
-          this.parentSomething = something
-        }
-      }
-      annotate(Parent, new Inject(Something))
-
-      class Child extends Parent {
-        constructor(superConstructor, something) {
-          superConstructor()
-          this.childSomething = something
-        }
-      }
-
-      annotate(Child, new Inject(SuperConstructor, Something))
-
-      var injector = new Injector()
-      var instance = injector.get(Child)
-
-      expect(instance.parentSomething).toBeInstanceOf(Something)
-      expect(instance.childSomething).toBeInstanceOf(Something)
-      expect(instance.childSomething).toBe(instance.parentSomething)
-    })
-
-    it('should support "super" to call multiple parent constructors', function() {
-      class Foo {}
-      class Bar {}
-
-      class Parent {
-        constructor(foo) {
-          this.parentFoo = foo
-        }
-      }
-      annotate(Parent, new Inject(Foo))
-
-      class Child extends Parent {
-        constructor(superConstructor, foo) {
-          superConstructor()
-          this.childFoo = foo
-        }
-      }
-      annotate(Child, new Inject(SuperConstructor, Foo))
-
-      class GrandChild extends Child {
-        constructor(superConstructor, foo, bar) {
-          superConstructor()
-          this.grandChildBar = bar
-          this.grandChildFoo = foo
-        }
-      }
-
-      annotate(GrandChild, new Inject(SuperConstructor, Foo, Bar))
-
-      var injector = new Injector()
-      var instance = injector.get(GrandChild)
-
-      expect(instance.parentFoo).toBeInstanceOf(Foo)
-      expect(instance.childFoo).toBeInstanceOf(Foo)
-      expect(instance.grandChildFoo).toBeInstanceOf(Foo)
-      expect(instance.grandChildBar).toBeInstanceOf(Bar)
-    })
-
-    it('should throw an error when used in a factory function', function() {
-      class Something {}
-
-      annotate(createSomething, new Provide(Something))
-      annotate(createSomething, new Inject(SuperConstructor))
-      function createSomething() {}
-
-      expect(function() {
-        var injector = new Injector([createSomething])
-        injector.get(Something)
-      }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
-    })
-
+    expect(function() {
+      injector.get(WithoutParent)
+    }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
   })
-
-  // it('should throw an error when used in a class without any parent', function() {
-  //   class WithoutParent {}
-  //   annotate(WithoutParent, new Inject(SuperConstructor))
-
-  //   var injector = new Injector()
-
-  //   expect(function() {
-  //     injector.get(WithoutParent)
-  //   }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
-  // })
 
   it('should throw an error when null/undefined token requested', function() {
     var injector = new Injector()
@@ -266,10 +189,99 @@ describe('injector', function() {
     expect(injector.get(Injector)).toBe(injector)
   })
 
+  describe('SuperConstructor', function () {
+
+    it('should support "super" to call a parent constructor', function() {
+      class Something {}
+      annotate(Something, new Type())
+
+      class Parent {
+        constructor(something) {
+          this.parentSomething = something
+        }
+      }
+      annotate(Parent, new Type())
+      annotate(Parent, new Inject(Something))
+
+      class Child extends Parent {
+        constructor(superConstructor, something) {
+          superConstructor()
+          this.childSomething = something
+        }
+      }
+      annotate(Child, new Type())
+      annotate(Child, new Inject(SuperConstructor, Something))
+
+      var injector = new Injector()
+      var instance = injector.get(Child)
+
+      expect(instance.parentSomething).toBeInstanceOf(Something)
+      expect(instance.childSomething).toBeInstanceOf(Something)
+      expect(instance.childSomething).toBe(instance.parentSomething)
+    })
+
+    it('should support "super" to call multiple parent constructors', function() {
+      class Foo {}
+      annotate(Foo, new Type())
+
+      class Bar {}
+      annotate(Bar, new Type())
+
+      class Parent {
+        constructor(foo) {
+          this.parentFoo = foo
+        }
+      }
+      annotate(Parent, new Type())
+      annotate(Parent, new Inject(Foo))
+
+      class Child extends Parent {
+        constructor(superConstructor, foo) {
+          superConstructor()
+          this.childFoo = foo
+        }
+      }
+      annotate(Child, new Type())
+      annotate(Child, new Inject(SuperConstructor, Foo))
+
+      class GrandChild extends Child {
+        constructor(superConstructor, foo, bar) {
+          superConstructor()
+          this.grandChildBar = bar
+          this.grandChildFoo = foo
+        }
+      }
+      annotate(GrandChild, new Type())
+      annotate(GrandChild, new Inject(SuperConstructor, Foo, Bar))
+
+      var injector = new Injector()
+      var instance = injector.get(GrandChild)
+
+      expect(instance.parentFoo).toBeInstanceOf(Foo)
+      expect(instance.childFoo).toBeInstanceOf(Foo)
+      expect(instance.grandChildFoo).toBeInstanceOf(Foo)
+      expect(instance.grandChildBar).toBeInstanceOf(Bar)
+    })
+
+    it('should throw an error when used in a factory function', function() {
+      class Something {}
+
+      annotate(createSomething, new Provide(Something))
+      annotate(createSomething, new Inject(SuperConstructor))
+      function createSomething() {}
+
+      expect(function() {
+        var injector = new Injector([createSomething])
+        injector.get(Something)
+      }).toThrowError(/Only classes with a parent can ask for SuperConstructor!/)
+    })
+  })
+
   describe('transient', function() {
 
     it('should never cache', function() {
       class Foo {}
+      annotate(Foo, new Type())
       annotate(Foo, new TransientScope())
 
       var injector = new Injector()
@@ -278,6 +290,7 @@ describe('injector', function() {
 
     it('should always use dependencies (default providers) from the youngest injector', function() {
       class Foo {}
+      annotate(Foo, new Type())
       annotate(Foo, new Inject())
 
       class AlwaysNewInstance {
@@ -285,6 +298,7 @@ describe('injector', function() {
           this.foo = foo
         }
       }
+      annotate(AlwaysNewInstance, new Type())
       annotate(AlwaysNewInstance, new TransientScope())
       annotate(AlwaysNewInstance, new Inject(Foo))
 
@@ -305,6 +319,7 @@ describe('injector', function() {
 
     it('should always use dependencies from the youngest injector', function() {
       class Foo {}
+      annotate(Foo, new Type())
       annotate(Foo, new Inject())
 
       class AlwaysNewInstance {
@@ -312,6 +327,7 @@ describe('injector', function() {
           this.foo = foo
         }
       }
+      annotate(AlwaysNewInstance, new Type())
       annotate(AlwaysNewInstance, new TransientScope())
       annotate(AlwaysNewInstance, new Inject(Foo))
 
@@ -337,6 +353,7 @@ describe('injector', function() {
       class Car {
         start() {}
       }
+      annotate(Car, new Type())
 
       var parent = new Injector([Car])
       var child = parent.createChild([])
@@ -351,10 +368,12 @@ describe('injector', function() {
       class Car {
         start() {}
       }
+      annotate(Car, new Type())
 
       class MockCar {
         start() {}
       }
+      annotate(MockCar, new Type())
       annotate(MockCar, new Provide(Car))
 
       var parent = new Injector([Car])
@@ -373,6 +392,7 @@ describe('injector', function() {
       class Engine {
         start() {}
       }
+      annotate(Engine, new Type())
 
       class Car {
         constructor(engine) {
@@ -381,6 +401,7 @@ describe('injector', function() {
 
         start() {}
       }
+      annotate(Car, new Type())
       annotate(Car, new RouteScope())
       annotate(Car, new Inject(Engine))
 
@@ -400,10 +421,12 @@ describe('injector', function() {
       class Engine {
         start() {}
       }
+      annotate(Engine, new Type())
 
       class MockEngine {
         start() {}
       }
+      annotate(MockEngine, new Type())
       annotate(MockEngine, new RouteScope())
       annotate(MockEngine, new Provide(Engine))
 
@@ -426,18 +449,21 @@ describe('injector', function() {
         constructor() {}
         start() {}
       }
+      annotate(Engine, new Type())
       annotate(Engine, new RouteScope())
 
       class MockEngine {
         constructor() {}
         start() {}
       }
+      annotate(MockEngine, new Type())
       annotate(MockEngine, new Provide(Engine))
       annotate(MockEngine, new RouteScope())
 
       class DoubleMockEngine {
         start() {}
       }
+      annotate(DoubleMockEngine, new Type())
       annotate(DoubleMockEngine, new Provide(Engine))
       annotate(DoubleMockEngine, new RouteScope())
 
@@ -487,6 +513,7 @@ describe('injector', function() {
       class RequestScope {}
 
       class Foo {}
+      annotate(Foo, new Type())
       annotate(Foo, new Inject())
       annotate(Foo, new RequestScope())
 
@@ -510,6 +537,7 @@ describe('injector', function() {
           constructorSpy()
         }
       }
+      annotate(ExpensiveEngine, new Type())
 
       class Car {
         constructor(createEngine) {
@@ -521,6 +549,7 @@ describe('injector', function() {
           this.engine = this.createEngine()
         }
       }
+      annotate(Car, new Type())
       annotate(Car, new InjectLazy(ExpensiveEngine))
 
       var injector = new Injector()
@@ -542,6 +571,7 @@ describe('injector', function() {
           constructorSpy()
         }
       }
+      annotate(ExpensiveEngine, new Type())
 
       class Car {
         constructor(createEngine) {
@@ -553,6 +583,7 @@ describe('injector', function() {
           this.engine = this.createEngine()
         }
       }
+      annotate(Car, new Type())
       annotate(Car, new InjectLazy(ExpensiveEngine))
 
       var injector = new Injector([ExpensiveEngine])
@@ -571,27 +602,29 @@ describe('injector', function() {
       it('should always create a new instance', function() {
         var constructorSpy = jasmine.createSpy('constructor')
 
-        class ExpensiveEngine {
-          constructor(power) {
-            constructorSpy()
-            this.power = power
+          class ExpensiveEngine {
+            constructor(power) {
+              constructorSpy()
+              this.power = power
+            }
           }
-        }
-        annotate(ExpensiveEngine, new TransientScope())
-        annotate(ExpensiveEngine, new Inject('power'))
+          annotate(ExpensiveEngine, new Type())
+          annotate(ExpensiveEngine, new TransientScope())
+          annotate(ExpensiveEngine, new Inject('power'))
 
-        class Car {
-          constructor(createEngine) {
-            this.createEngine = createEngine
+          class Car {
+            constructor(createEngine) {
+              this.createEngine = createEngine
+            }
           }
-        }
-        annotate(Car, new InjectLazy(ExpensiveEngine))
+          annotate(Car, new Type())
+          annotate(Car, new InjectLazy(ExpensiveEngine))
 
-        var injector = new Injector()
-        var car = injector.get(Car)
+          var injector = new Injector()
+          var car = injector.get(Car)
 
-        var veyronEngine = car.createEngine('power', 1184)
-        var mustangEngine = car.createEngine('power', 420)
+          var veyronEngine = car.createEngine('power', 1184)
+          var mustangEngine = car.createEngine('power', 420)
 
         expect(veyronEngine).not.toBe(mustangEngine)
         expect(veyronEngine.power).toBe(1184)

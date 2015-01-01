@@ -13,6 +13,7 @@ export {
   ProvidePromise,
   SuperConstructor,
   Factory,
+  Type,
   TransientScope
 } from './annotations'
 

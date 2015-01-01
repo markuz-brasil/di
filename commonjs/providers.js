@@ -5,6 +5,7 @@ var SuperConstructorAnnotation = require('./annotations').SuperConstructor;
 var readAnnotations = require('./annotations').readAnnotations;
 var hasAnnotation = require('./annotations').hasAnnotation;
 var Factory = require('./annotations').Factory;
+var Type = require('./annotations').Type;
 var isFunction = require('./util').isFunction;
 var isObject = require('./util').isObject;
 var toString = require('./util').toString;
@@ -134,6 +135,10 @@ function createProviderFromFnOrClass(ClassOrFactory, annotations) {
     return new FactoryProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
   }
 
-  return new ClassProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
+  if (hasAnnotation(ClassOrFactory, Type)) {
+    return new ClassProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
+  }
+
+  return new FactoryProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
 }
 //# sourceMappingURL=maps/providers.js.map
