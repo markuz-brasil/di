@@ -18,7 +18,7 @@ export class SuperConstructor {}
 export class TransientScope {}
 
 export class Factory {}
-export class Type {}
+export class Constructor {}
 
 export class Inject {
   constructor(...tokens) {

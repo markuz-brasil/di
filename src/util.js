@@ -8,7 +8,6 @@ export function isObject(value) {
   return typeof value === 'object'
 }
 
-
 export function toString(token) {
   if (typeof token === 'string') {
     return token

@@ -157,7 +157,6 @@ var Injector = (function () {
                 return args[ii + 1];
               };
 
-              annotate(fn, new FactoryAnnotation());
               annotate(fn, new ProvideAnnotation(args[ii]));
 
               return fn;

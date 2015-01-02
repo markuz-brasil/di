@@ -5,7 +5,7 @@ import {
   annotate,
   Injector,
   Inject,
-  Type,
+  Constructor,
   InjectPromise,
   ProvidePromise,
   TransientScope
@@ -26,7 +26,7 @@ class UserController {
     this.list = list
   }
 }
-annotate(UserController, new Type())
+annotate(UserController, new Constructor())
 annotate(UserController, new Inject(UserList))
 
 class SmartUserController {
@@ -34,7 +34,7 @@ class SmartUserController {
     this.promise = promise
   }
 }
-annotate(SmartUserController, new Type())
+annotate(SmartUserController, new Constructor())
 annotate(SmartUserController, new InjectPromise(UserList))
 
 describe('async', function() {
@@ -111,7 +111,7 @@ describe('async', function() {
         this.list = list
       }
     }
-    annotate(NeverCachedUserController, new Type())
+    annotate(NeverCachedUserController, new Constructor())
     annotate(NeverCachedUserController, new TransientScope())
     annotate(NeverCachedUserController, new Inject(UserList))
 

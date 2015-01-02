@@ -4,8 +4,7 @@ exports.createProviderFromFnOrClass = createProviderFromFnOrClass;
 var SuperConstructorAnnotation = require('./annotations').SuperConstructor;
 var readAnnotations = require('./annotations').readAnnotations;
 var hasAnnotation = require('./annotations').hasAnnotation;
-var Factory = require('./annotations').Factory;
-var Type = require('./annotations').Type;
+var ConstructorAnnotation = require('./annotations').Constructor;
 var isFunction = require('./util').isFunction;
 var isObject = require('./util').isObject;
 var toString = require('./util').toString;
@@ -131,11 +130,7 @@ var FactoryProvider = (function () {
 })();
 
 function createProviderFromFnOrClass(ClassOrFactory, annotations) {
-  if (hasAnnotation(ClassOrFactory, Factory)) {
-    return new FactoryProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
-  }
-
-  if (hasAnnotation(ClassOrFactory, Type)) {
+  if (hasAnnotation(ClassOrFactory, ConstructorAnnotation)) {
     return new ClassProvider(ClassOrFactory, annotations.params, annotations.provide.isPromise);
   }
 

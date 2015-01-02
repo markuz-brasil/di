@@ -18,7 +18,7 @@ require('6to5/polyfill');
 var annotate = require('../index').annotate;
 var Injector = require('../index').Injector;
 var Inject = require('../index').Inject;
-var Type = require('../index').Type;
+var Constructor = require('../index').Constructor;
 var InjectPromise = require('../index').InjectPromise;
 var ProvidePromise = require('../index').ProvidePromise;
 var TransientScope = require('../index').TransientScope;
@@ -36,14 +36,14 @@ var UserController = function UserController(list) {
   this.list = list;
 };
 
-annotate(UserController, new Type());
+annotate(UserController, new Constructor());
 annotate(UserController, new Inject(UserList));
 
 var SmartUserController = function SmartUserController(promise) {
   this.promise = promise;
 };
 
-annotate(SmartUserController, new Type());
+annotate(SmartUserController, new Constructor());
 annotate(SmartUserController, new InjectPromise(UserList));
 
 describe("async", function () {
@@ -119,7 +119,7 @@ describe("async", function () {
       this.list = list;
     };
 
-    annotate(NeverCachedUserController, new Type());
+    annotate(NeverCachedUserController, new Constructor());
     annotate(NeverCachedUserController, new TransientScope());
     annotate(NeverCachedUserController, new Inject(UserList));
 

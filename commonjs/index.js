@@ -11,6 +11,6 @@ exports.Provide = require("./annotations").Provide;
 exports.ProvidePromise = require("./annotations").ProvidePromise;
 exports.SuperConstructor = require("./annotations").SuperConstructor;
 exports.Factory = require("./annotations").Factory;
-exports.Type = require("./annotations").Type;
+exports.Constructor = require("./annotations").Constructor;
 exports.TransientScope = require("./annotations").TransientScope;
 //# sourceMappingURL=maps/index.js.map
