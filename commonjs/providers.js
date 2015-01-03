@@ -1,10 +1,10 @@
 "use strict";
 
 exports.createProviderFromFnOrClass = createProviderFromFnOrClass;
+var ConstructorAnnotation = require('./annotations').Constructor;
 var SuperConstructorAnnotation = require('./annotations').SuperConstructor;
 var readAnnotations = require('./annotations').readAnnotations;
 var hasAnnotation = require('./annotations').hasAnnotation;
-var ConstructorAnnotation = require('./annotations').Constructor;
 var isFunction = require('./util').isFunction;
 var isObject = require('./util').isObject;
 var toString = require('./util').toString;

@@ -27,18 +27,6 @@ function constructResolvingMessage(resolving, token) {
 }
 
 
-// Injector encapsulate a life scope.
-// There is exactly one instance for given token in given injector.
-//
-// All the state is immutable, the only state changes is the cache. There is however no way to produce different instance under given token. In that sense it is immutable.
-//
-// Injector is responsible for:
-// - resolving tokens into
-//   - provider
-//   - value (cache/calling provider)
-// - dealing with isPromise
-// - dealing with isLazy
-// - loading different "providers" and modules
 var Injector = (function () {
   var Injector = function Injector(modules, parentInjector, providers, scopes) {
     if (modules === undefined) modules = [];

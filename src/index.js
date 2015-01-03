@@ -11,9 +11,8 @@ export {
   InjectPromise,
   Provide,
   ProvidePromise,
-  SuperConstructor,
-  Factory,
   Constructor,
+  SuperConstructor,
   TransientScope
 } from './annotations'
 

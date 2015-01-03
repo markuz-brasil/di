@@ -1,10 +1,11 @@
 import {
+  Constructor as ConstructorAnnotation,
   SuperConstructor as SuperConstructorAnnotation,
   readAnnotations,
-  hasAnnotation,
-  Constructor as ConstructorAnnotation
+  hasAnnotation
 } from './annotations'
-import {isFunction, isObject, toString} from './util'
+
+import { isFunction, isObject, toString } from './util'
 
 
 // Provider is responsible for creating instances.

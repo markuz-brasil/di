@@ -9,8 +9,8 @@ import {
   TransientScope as TransientScopeAnnotation
 } from './annotations'
 
-import {isFunction, toString} from './util'
-import {createProviderFromFnOrClass} from './providers'
+import { isFunction, toString } from './util'
+import { createProviderFromFnOrClass } from './providers'
 
 
 function constructResolvingMessage(resolving, token) {
@@ -40,7 +40,7 @@ function constructResolvingMessage(resolving, token) {
 // - dealing with isPromise
 // - dealing with isLazy
 // - loading different "providers" and modules
-class Injector {
+export class Injector {
 
   constructor(modules = [], parentInjector = null, providers = new Map(), scopes = []) {
     this._cache = new Map()
@@ -317,6 +317,3 @@ class Injector {
     return new Injector(modules, this, forcedProviders, forceNewInstancesOf)
   }
 }
-
-
-export {Injector}
